@@ -1,0 +1,108 @@
+[server]
+port = ":25051"
+serviceId = "dq"
+
+[log]
+useTerminal = true
+useFile = false
+terminalJSONOutput = true
+verbosityTerminal = 4
+verbosityFile = 4
+filePath = ""
+
+[account]
+type = "KEYSTORE"
+
+[account.keystoreInfo]
+filePath = "./conf/keystore1"
+awsRegion="ap-northeast-2"
+password = "npdev12#$"
+
+[fxportal]
+maticApiUrl= "https://proof-generator.polygon.technology/api/v1/mumbai"
+rootTokenAddress = "0xc4f7368399e715aafe85f26b639d0cf40646aa38" # ether npt
+childTokenAddress = "0xa527d46725aeb12e36f78bd609ede7bb9b35c31c" # polygon npt
+
+[validator]
+speedUpTimeOut = 90
+
+[control]
+bridgePauseGasPrice = 400000000000
+bridgePauseCount = 10
+bridgePauseCountMax = 15
+# Second
+bridgePauseTimeOut = 3600
+# Second
+bridgeGasCheckDuration = 60
+
+
+[Repositories]
+[Repositories.redis-db]
+dataSource = "master.neopin-dq-main.qkcyeo.apn2.cache.amazonaws.com:26309"
+userName = ""
+password = "spdhvlsfpeltmghkdlxld^^!"
+db = "0"
+tls = true
+
+[Repositories.item-db]
+dataSource = "mongodb://mongodb3.dq.neopin.nwz.cloud:47019,mongodb3.slave.dq.neopin.nwz.cloud:47019/?replicaSet=npContRepl"
+userName = "gateway"
+password = "2022spdhvmffkdl100qo!"
+db = "ItemDB"
+
+[Repositories.history-db]
+dataSource = "mongodb://mongodb3.dq.neopin.nwz.cloud:47019,mongodb3.slave.dq.neopin.nwz.cloud:47019/?replicaSet=npContRepl"
+userName = "gateway"
+password = "2022spdhvmffkdl100qo!"
+db = "historyDB"
+
+[Repositories.config-db]
+dataSource = "mongodb://mongodb3.dq.neopin.nwz.cloud:47019,mongodb3.slave.dq.neopin.nwz.cloud:47019/?replicaSet=npContRepl"
+userName = "gateway"
+password = "2022spdhvmffkdl100qo!"
+db = "configDB"
+
+[Repositories.admin-db]
+dataSource = "mongodb://mongodb3.dq.neopin.nwz.cloud:47019,mongodb3.slave.dq.neopin.nwz.cloud:47019/?replicaSet=npContRepl"
+userName = "gateway"
+password = "2022spdhvmffkdl100qo!"
+db = "adminDB"
+
+[Repositories.contract-db]
+dataSource = "mongodb://mongodb3.dq.neopin.nwz.cloud:47019,mongodb3.slave.dq.neopin.nwz.cloud:47019/?replicaSet=npContRepl"
+userName = "gateway"
+password = "2022spdhvmffkdl100qo!"
+db = "contractDB"
+
+[client.klay]
+url = [
+    "ws://node1.dq.neopin.pmang.cloud:13200",
+]
+
+[client.klay.contract]
+vault = "0x3671477c7D3444773A272FAEF2b7C632B26AffE5"
+multiSigWallet = "0xB77F0Ab0f5dD4F15107586316B3C6FAE9007259C"
+minter = "0xb3a4EDf059903A550F6C3c7B7455DAC0Ab5fc834"
+
+[client.polygon]
+url = [
+    "ws://node1.dq.neopin.pmang.cloud:16200",
+]
+
+[client.polygon.contract]
+vault = "0xCC969B9C8Ba82FA5Cf37C7E5c6c75c60d0692fAb"
+multiSigWallet = "0x030FeAB36B05655e209D91b97c12C0937Ab4626f"
+minter = "0x8B6EE1f35Ec5bBd74785a8554E82929e41A198a0"
+fxERC20ChildTunnel = "0x60b1bd7499c0c68c219ef963826a389a94ecfd90"
+
+[client.ether]
+url = [
+    "ws://node1.dq.neopin.pmang.cloud:12200",
+]
+
+[client.ether.contract]
+vault = "0x7a5D7eaB9C3ea0D9c3CdD981200693c23E9E539a"
+multiSigWallet = "0x590524e878c3A589125116567e1d38028910A5c8"
+minter = "0x5066cBe3Fd96F35eD463a6DA5435e8381096b6c2"
+rootChainProxy = "0x2890bA17EfE978480615e330ecB65333b880928e"
+fxERC20RootTunnel = "0x3c8a1fb68c3550189f4a37e6198b3648823ded05"

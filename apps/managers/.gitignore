@@ -1,0 +1,17 @@
+logs/
+output/
+.vscode/
+coverage.txt
+.DS_Store
+*.log
+*.gok
+*.bak
+*.out
+*.key
+*.enc
+UTC--*
+*/build/
+conf/config.toml
+go.sum
+.idea/
+*build/*
