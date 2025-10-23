@@ -11,8 +11,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/klaytn/klaytn/accounts/keystore"
-	"github.com/klaytn/klaytn/crypto"
+	"github.com/kaiachain/kaia/accounts/keystore"
+	"github.com/kaiachain/kaia/crypto"
 )
 
 var passphrase = ""

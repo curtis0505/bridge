@@ -5,7 +5,7 @@ import (
 	"github.com/curtis0505/bridge/apps/validators/conf"
 	"github.com/curtis0505/bridge/apps/validators/validator"
 	"github.com/curtis0505/bridge/libs/client/chain"
-	"github.com/curtis0505/bridge/libs/elog"
+	"github.com/curtis0505/bridge/libs/logger"
 	"github.com/curtis0505/bridge/libs/types"
 	"runtime/debug"
 )
@@ -13,7 +13,7 @@ import (
 type App struct {
 	cfg       conf.Config
 	client    *chain.Client
-	logger    *elog.Logger
+	logger    *logger.Logger
 	Validator *validator.Validator
 }
 
@@ -22,7 +22,7 @@ func New(client *chain.Client, config conf.Config, validator *validator.Validato
 		cfg:       config,
 		client:    client,
 		Validator: validator,
-		logger:    elog.NewLogger("app"),
+		logger:    logger.NewLogger("app"),
 	}
 	return app, nil
 }
@@ -31,7 +31,7 @@ func (app *App) Run() {
 	for _, chainSymbol := range app.client.GetChains() {
 		contractAddress, err := app.Validator.Contract.GetChain(types.Chain(chainSymbol))
 		if err != nil {
-			elog.Error("Run", "method", "GetChain", "err", err)
+			logger.Error("Run", "method", "GetChain", "err", err)
 			return
 		}
 
@@ -46,7 +46,7 @@ func (app *App) Run() {
 			contractAddress.RestakeMultiSigWallet,
 		)
 		if err != nil {
-			elog.Error("Run", "method", "Subscribe", "err", err)
+			logger.Error("Run", "method", "Subscribe", "err", err)
 			return
 		}
 	}

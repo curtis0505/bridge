@@ -4,7 +4,7 @@ import (
 	arbabi "github.com/curtis0505/arbitrum/accounts/abi"
 	baseabi "github.com/curtis0505/base/accounts/abi"
 	etherabi "github.com/ethereum/go-ethereum/accounts/abi"
-	klayabi "github.com/klaytn/klaytn/accounts/abi"
+	klayabi "github.com/kaiachain/kaia/accounts/abi"
 )
 
 const (

@@ -5,7 +5,7 @@ import (
 	arbhexutil "github.com/curtis0505/arbitrum/common/hexutil"
 	basehexutil "github.com/curtis0505/base/common/hexutil"
 	etherhexutil "github.com/ethereum/go-ethereum/common/hexutil"
-	klayhexutil "github.com/klaytn/klaytn/common/hexutil"
+	klayhexutil "github.com/kaiachain/kaia/common/hexutil"
 	"strings"
 )
 

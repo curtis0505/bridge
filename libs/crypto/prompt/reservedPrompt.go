@@ -3,7 +3,7 @@ package prompt
 import (
 	"fmt"
 
-	"github.com/klaytn/klaytn/console"
+	"github.com/kaiachain/kaia/console"
 )
 
 type ReservedPromptInput struct {

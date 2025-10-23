@@ -2,9 +2,8 @@ package types
 
 import (
 	basetypes "github.com/curtis0505/base/core/types"
-	troncore "github.com/curtis0505/grpc-idl/tron/core"
 	ethertypes "github.com/ethereum/go-ethereum/core/types"
-	klaytypes "github.com/klaytn/klaytn/blockchain/types"
+	klaytypes "github.com/kaiachain/kaia/blockchain/types"
 	"math/big"
 )
 
@@ -26,8 +25,6 @@ func (r *Header) BlockNumber() *big.Int {
 		return v.Number
 	case *basetypes.Header:
 		return v.Number
-	case *troncore.BlockHeader:
-		return big.NewInt(v.GetRawData().GetNumber())
 	}
 	return big.NewInt(0)
 }
@@ -40,8 +37,6 @@ func (r *Header) BaseFee() *big.Int {
 		return v.BaseFee
 	case *basetypes.Header:
 		return v.BaseFee
-	case *troncore.BlockHeader:
-		return big.NewInt(0)
 	}
 	return big.NewInt(0)
 }
@@ -54,8 +49,6 @@ func (r *Header) Time() uint64 {
 		return v.Time
 	case *basetypes.Header:
 		return v.Time
-	case *troncore.BlockHeader:
-		return uint64(v.GetRawData().GetTimestamp())
 	}
 	return 0
 }

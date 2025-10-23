@@ -1,6 +1,23 @@
-go 1.22.5
+go 1.24.0
+
+toolchain go1.24.4
 
 use (
-    ./apps/api
-    ./libs
+	./apps/managers
+	./apps/validators
+	./libs
 )
+
+//
+//replace (
+//	//github.com/coinbase/rosetta-sdk-go/types => github.com/coinbase/rosetta-sdk-go v0.7.9
+//	github.com/crate-crypto/go-kzg-4844 => github.com/crate-crypto/go-kzg-4844 v1.1.0
+//	github.com/ethereum/go-ethereum => github.com/ethereum/go-ethereum v1.15.11
+//	github.com/samber/lo => github.com/samber/lo v1.49.1
+//)
+
+replace github.com/btcsuite/btcd/btcec/v2 => github.com/btcsuite/btcd/btcec/v2 v2.3.3
+
+replace github.com/kaiachain/kaia =>  github.com/curtis0505/kaia v1.0.1
+
+replace github.com/btcsuite/btcd => github.com/btcsuite/btcd v0.24.0

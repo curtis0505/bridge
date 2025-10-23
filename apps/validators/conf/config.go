@@ -2,7 +2,7 @@ package conf
 
 import (
 	"github.com/curtis0505/bridge/libs/client/chain/conf"
-	"github.com/curtis0505/bridge/libs/elog"
+	"github.com/curtis0505/bridge/libs/logger"
 	commontypes "github.com/curtis0505/bridge/libs/types"
 	"github.com/naoina/toml"
 	"os"
@@ -16,7 +16,7 @@ type Config struct {
 	Client   conf.Config               `toml:"client"`
 	Account  commontypes.AccountConfig `toml:"account"`
 	Contract map[string]ContractConfig `toml:"contract"`
-	Log      elog.Config
+	Log      logger.Config
 }
 
 type Server struct {
@@ -49,18 +49,18 @@ func NewConfig(filePath ...string) (*Config, error) {
 
 	configFile, err := os.ReadFile(configFilePath)
 	if err != nil {
-		elog.Error("Error reading config file", "error", err)
+		logger.Error("Error reading config file", "error", err)
 		return nil, err
 	}
 	var config Config
 	customToml := toml.DefaultConfig
 	customToml.MissingField = func(rt reflect.Type, field string) error {
-		elog.Warn("MissingField", "type", rt, "field", field)
+		logger.Warn("MissingField", "type", rt, "field", field)
 		return nil
 	}
 	err = customToml.Unmarshal(configFile, &config)
 	if err != nil {
-		elog.Error("Unmarshal", "err", err)
+		logger.Error("Unmarshal", "err", err)
 		return nil, err
 	}
 

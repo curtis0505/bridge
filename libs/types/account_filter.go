@@ -2,7 +2,7 @@ package types
 
 import (
 	"github.com/bits-and-blooms/bloom/v3"
-	"github.com/klaytn/klaytn/common"
+	"github.com/kaiachain/kaia/common"
 )
 
 type SingleAccountFilter struct {

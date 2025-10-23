@@ -3,7 +3,7 @@ package util
 import (
 	"fmt"
 	"github.com/ethereum/go-ethereum/crypto"
-	kaiacrypto "github.com/klaytn/klaytn/crypto"
+	kaiacrypto "github.com/kaiachain/kaia/crypto"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"

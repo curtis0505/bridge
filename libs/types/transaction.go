@@ -2,8 +2,6 @@ package types
 
 import (
 	"bytes"
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"github.com/cometbft/cometbft/crypto/tmhash"
@@ -19,21 +17,18 @@ import (
 	basetypes "github.com/curtis0505/base/core/types"
 	baserlp "github.com/curtis0505/base/rlp"
 	cosmoscommon "github.com/curtis0505/bridge/libs/common/cosmos"
-	"github.com/curtis0505/bridge/libs/logger/v2"
-	troncore "github.com/curtis0505/grpc-idl/tron/core"
+	loggerv2 "github.com/curtis0505/bridge/libs/logger/v2"
 	etherabi "github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	ethercommon "github.com/ethereum/go-ethereum/common"
 	etherhexutil "github.com/ethereum/go-ethereum/common/hexutil"
 	ethertypes "github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
 	etherrlp "github.com/ethereum/go-ethereum/rlp"
-	klayabi "github.com/klaytn/klaytn/accounts/abi"
-	klaytypes "github.com/klaytn/klaytn/blockchain/types"
-	klaycommon "github.com/klaytn/klaytn/common"
-	klayhexutil "github.com/klaytn/klaytn/common/hexutil"
-	klayrlp "github.com/klaytn/klaytn/rlp"
-	"google.golang.org/protobuf/proto"
+	klayabi "github.com/kaiachain/kaia/accounts/abi"
+	klaytypes "github.com/kaiachain/kaia/blockchain/types"
+	klaycommon "github.com/kaiachain/kaia/common"
+	klayhexutil "github.com/kaiachain/kaia/common/hexutil"
+	klayrlp "github.com/kaiachain/kaia/rlp"
 	"math/big"
 	"reflect"
 )
@@ -187,9 +182,6 @@ func (tx *Transaction) From() string {
 			return arbcommon.Address{}.String()
 		}
 		return sender.String()
-
-	case *troncore.Transaction:
-		return NotSupported.Error()
 	case *cosmostxtypes.Tx:
 		if len(v.GetAuthInfo().GetSignerInfos()) > 1 {
 			return "MultiSig"
@@ -244,16 +236,6 @@ func (tx *Transaction) TxHash() string {
 		return v.Hash().String()
 	case *basetypes.Transaction:
 		return v.Hash().String()
-	case *troncore.Transaction:
-		raw, err := proto.Marshal(v.GetRawData())
-		if err != nil {
-			return ""
-		}
-
-		sha256hash := sha256.New()
-		sha256hash.Write(raw)
-		hash := sha256hash.Sum(nil)
-		return hex.EncodeToString(hash)
 	case *cosmostxtypes.Tx:
 		raw, err := v.Marshal()
 		if err != nil {
@@ -275,8 +257,6 @@ func (tx *Transaction) Data() []byte {
 		return v.Data()
 	case *basetypes.Transaction:
 		return v.Data()
-	case *troncore.Transaction:
-		return nil
 	case *cosmostxtypes.Tx:
 		fmt.Println(v.GetMsgs())
 		return nil
@@ -517,48 +497,9 @@ func (tx *Transaction) UnmarshalABI(abi interface{}, value interface{}) error {
 			return err
 		}
 		return nil
-	case *troncore.Transaction:
-		a := c.(etherabi.ABI)
-		m := etherabi.Method{}
-		for _, method := range a.Methods {
-			if bytes.Equal(id, method.ID) {
-				m = method
-				break
-			}
-		}
-
-		values, err := m.Inputs.Unpack(tx.Data()[4:])
-		if err != nil {
-			return err
-		}
-
-		if err = m.Inputs.Copy(value, values); err != nil {
-			return err
-		}
-		return nil
 	}
 
 	return InvalidTransaction
-}
-
-func (tx *Transaction) UnmarshalProto(message proto.Message) error {
-	switch v := tx.inner.(type) {
-	case *troncore.Transaction:
-		contracts := make([]string, 0)
-		for _, contract := range v.GetRawData().GetContract() {
-			contracts = append(contracts, contract.GetType().String())
-
-			err := contract.GetParameter().UnmarshalTo(message)
-			if err != nil {
-				continue
-			}
-			return nil
-		}
-		return fmt.Errorf("not found contract event: (%s) exists: %v", reflect.TypeOf(message).String(), contracts)
-	case *cosmostxtypes.Tx:
-
-	}
-	return NotSupported
 }
 
 func (tx *Transaction) ChainId() *big.Int {
@@ -571,8 +512,6 @@ func (tx *Transaction) ChainId() *big.Int {
 		return v.ChainId()
 	case *basetypes.Transaction:
 		return v.ChainId()
-	case *troncore.Transaction:
-		return big.NewInt(0)
 	}
 	return big.NewInt(0)
 }
@@ -608,8 +547,6 @@ func (tx *Transaction) Type() TxType {
 		case basetypes.DynamicFeeTxType:
 			return TxTypeEthereumDynamicFee
 		}
-	case *troncore.Transaction:
-		return TxTypeTronTransaction
 	case *cosmostxtypes.Tx:
 		return TxTypeCosmosTransaction
 	}
@@ -626,8 +563,6 @@ func (tx *Transaction) Gas() uint64 {
 		return v.Gas()
 	case *basetypes.Transaction:
 		return v.Gas()
-	case *troncore.Transaction:
-		return 0
 	case *cosmostxtypes.Tx:
 		return 0
 	}
@@ -644,8 +579,6 @@ func (tx *Transaction) GasPrice() *big.Int {
 		return v.GasPrice()
 	case *basetypes.Transaction:
 		return v.GasPrice()
-	case *troncore.Transaction:
-		return big.NewInt(0)
 	case *cosmostxtypes.Tx:
 		return big.NewInt(0)
 	}
@@ -670,8 +603,6 @@ func (tx *Transaction) TxFee(blockBaseFee *big.Int) *big.Int {
 		return new(big.Int).Mul(tx.GasPrice(), gasUsed)
 	case TxTypeEthereumDynamicFee:
 		return new(big.Int).Mul(new(big.Int).Add(blockBaseFee, tx.GasTipCap()), gasUsed)
-	case TxTypeTronTransaction:
-		return big.NewInt(0)
 	}
 
 	return big.NewInt(0)
@@ -739,23 +670,6 @@ func (tx *Transaction) SignTx(account *Account, chainId *big.Int) (*Transaction,
 		}
 		tx.inner = signed
 		return tx, nil
-	case *troncore.Transaction:
-		raw, err := proto.Marshal(v.GetRawData())
-		if err != nil {
-			return nil, err
-		}
-
-		sha256hash := sha256.New()
-		sha256hash.Write(raw)
-		hash := sha256hash.Sum(nil)
-		sig, err := crypto.Sign(hash[:], account.PrivateKey)
-		if err != nil {
-			return nil, err
-		}
-
-		v.Signature = append(v.Signature, sig)
-		tx.inner = v
-		return tx, nil
 	case *cosmostxtypes.Tx:
 	}
 
@@ -763,7 +677,7 @@ func (tx *Transaction) SignTx(account *Account, chainId *big.Int) (*Transaction,
 }
 
 func (tx *Transaction) SignTxKms(signer *bind.TransactOpts, chainId *big.Int) (*Transaction, error) {
-	logger.Debug("SignTxKms", logger.BuildLogInput().WithData("signer", signer, "chainId", chainId, "inner", tx.inner, "tx", tx))
+	loggerv2.Debug("SignTxKms", loggerv2.BuildLogInput().WithData("signer", signer, "chainId", chainId, "inner", tx.inner, "tx", tx))
 	switch v := tx.inner.(type) {
 	case *klaytypes.Transaction:
 		nonce, err := tx.Nonce()
@@ -879,8 +793,8 @@ func (tx *Transaction) SignTxKms(signer *bind.TransactOpts, chainId *big.Int) (*
 			signature = append(signature[:], vv.Bytes()...)
 		}
 
-		logger.Debug("SignTxKms_WithSignature_Before",
-			logger.BuildLogInput().WithData(
+		loggerv2.Debug("SignTxKms_WithSignature_Before",
+			loggerv2.BuildLogInput().WithData(
 				"signer", signer,
 				"etherTx", etherTx,
 				"signed", signed,
@@ -1062,14 +976,6 @@ func (tx *Transaction) CosmosTransaction() (*cosmostxtypes.Tx, error) {
 	return nil, fmt.Errorf("invalid tx")
 }
 
-func (tx *Transaction) TronTransaction() (*troncore.Transaction, error) {
-	switch v := tx.inner.(type) {
-	case *troncore.Transaction:
-		return v, nil
-	}
-	return nil, fmt.Errorf("invalid tx")
-}
-
 func (tx *Transaction) MarshalJSON() ([]byte, error) {
 	switch v := tx.inner.(type) {
 	case *klaytypes.Transaction:
@@ -1079,8 +985,6 @@ func (tx *Transaction) MarshalJSON() ([]byte, error) {
 	case *arbtypes.Transaction:
 		return json.MarshalIndent(v, "", " ")
 	case *basetypes.Transaction:
-		return json.MarshalIndent(v, "", " ")
-	case *troncore.Transaction:
 		return json.MarshalIndent(v, "", " ")
 	case *cosmostxtypes.Tx:
 		return json.MarshalIndent(v, "", " ")

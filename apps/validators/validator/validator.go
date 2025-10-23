@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/curtis0505/bridge/apps/validators/conf"
 	"github.com/curtis0505/bridge/libs/client/chain"
-	"github.com/curtis0505/bridge/libs/elog"
+	"github.com/curtis0505/bridge/libs/logger"
 	commontypes "github.com/curtis0505/bridge/libs/types"
 	bridgetypes "github.com/curtis0505/bridge/libs/types/bridge"
 	"strings"
@@ -13,7 +13,7 @@ import (
 type Validator struct {
 	cfg      conf.Config
 	client   *chain.Client
-	logger   *elog.Logger
+	logger   *logger.Logger
 	Account  map[string]*commontypes.Account
 	Contract bridgetypes.ContractAddresses
 
@@ -25,7 +25,7 @@ func New(client *chain.Client, cfg conf.Config, account map[string]*commontypes.
 	validator := Validator{
 		cfg:                cfg,
 		client:             client,
-		logger:             elog.NewLogger("Validator"),
+		logger:             logger.NewLogger("Validator"),
 		Account:            account,
 		Contract:           make(bridgetypes.ContractAddresses),
 		logEvent:           make(map[string]func(commontypes.Log) error),

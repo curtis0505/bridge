@@ -21,11 +21,11 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/log"
-	"github.com/klaytn/klaytn/accounts"
-	"github.com/klaytn/klaytn/accounts/keystore"
-	"github.com/klaytn/klaytn/common"
-	"github.com/klaytn/klaytn/common/hexutil"
-	"github.com/klaytn/klaytn/console"
+	"github.com/kaiachain/kaia/accounts"
+	"github.com/kaiachain/kaia/accounts/keystore"
+	"github.com/kaiachain/kaia/common"
+	"github.com/kaiachain/kaia/common/hexutil"
+	"github.com/kaiachain/kaia/console"
 )
 
 const (

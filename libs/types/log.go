@@ -9,18 +9,15 @@ import (
 	baseabi "github.com/curtis0505/base/accounts/abi"
 	basecommon "github.com/curtis0505/base/common"
 	basetypes "github.com/curtis0505/base/core/types"
-	troncommon "github.com/curtis0505/bridge/libs/common/tron"
 	"github.com/curtis0505/bridge/libs/types/bridge/abi/base"
 	"github.com/curtis0505/bridge/libs/types/bridge/abi/ether"
 	"github.com/curtis0505/bridge/libs/types/bridge/abi/klay"
-	troncore "github.com/curtis0505/grpc-idl/tron/core"
 	etherabi "github.com/ethereum/go-ethereum/accounts/abi"
 	ethercommon "github.com/ethereum/go-ethereum/common"
 	ethertypes "github.com/ethereum/go-ethereum/core/types"
-	klayabi "github.com/klaytn/klaytn/accounts/abi"
-	klaytypes "github.com/klaytn/klaytn/blockchain/types"
-	klaycommon "github.com/klaytn/klaytn/common"
-	"github.com/klaytn/klaytn/common/hexutil"
+	klayabi "github.com/kaiachain/kaia/accounts/abi"
+	klaytypes "github.com/kaiachain/kaia/blockchain/types"
+	klaycommon "github.com/kaiachain/kaia/common"
 )
 
 type Log struct {
@@ -194,8 +191,6 @@ func (log Log) Data() []byte {
 		return v.Data
 	case basetypes.Log:
 		return v.Data
-	case *troncore.TransactionInfo_Log:
-		return v.GetData()
 	}
 	return nil
 }
@@ -208,8 +203,6 @@ func (log Log) Address() string {
 		return v.Address.String()
 	case basetypes.Log:
 		return v.Address.String()
-	case *troncore.TransactionInfo_Log:
-		return troncommon.FromBytes(v.Address).String()
 	case abcitypes.Event:
 		return log.contractAddress
 	}
@@ -238,8 +231,6 @@ func (log Log) TxHash() string {
 		return v.TxHash.String()
 	case basetypes.Log:
 		return v.TxHash.String()
-	case *troncore.TransactionInfo_Log:
-		return log.txHash
 	case *abcitypes.Event:
 		return log.txHash
 	}
@@ -261,10 +252,6 @@ func (log Log) Topics() []string {
 		for _, topic := range v.Topics {
 			topics = append(topics, topic.String())
 		}
-	case *troncore.TransactionInfo_Log:
-		for _, topic := range v.GetTopics() {
-			topics = append(topics, hexutil.Encode(topic[:]))
-		}
 	case *abcitypes.Event:
 		return topics
 	}
@@ -279,8 +266,6 @@ func (log Log) Index() uint {
 		return v.Index
 	case basetypes.Log:
 		return v.Index
-	case *troncore.TransactionInfo_Log:
-		return 0
 	case abcitypes.Event:
 		return uint(log.index)
 	}
@@ -295,8 +280,6 @@ func (log Log) TxIndex() uint {
 		return v.TxIndex
 	case basetypes.Log:
 		return v.TxIndex
-	case *troncore.TransactionInfo_Log:
-		return 0
 	}
 	return 0
 }
@@ -370,32 +353,6 @@ func (log Log) Unmarshal(value interface{}) error {
 		}
 
 		err = baseabi.ParseTopics(value, indexed, v.Topics[1:])
-		if err != nil {
-			return err
-		}
-	case *troncore.TransactionInfo_Log:
-		abi := log.abi.(etherabi.ABI)
-		var indexed etherabi.Arguments
-
-		for _, arg := range abi.Events[log.EventName].Inputs {
-			if arg.Indexed {
-				indexed = append(indexed, arg)
-			}
-		}
-
-		if len(log.Data()) > 0 {
-			err = abi.UnpackIntoInterface(value, log.EventName, log.Data())
-			if err != nil {
-				return err
-			}
-		}
-
-		var topics []ethercommon.Hash
-		for _, ts := range log.Topics() {
-			topics = append(topics, ethercommon.HexToHash(ts))
-		}
-
-		err = etherabi.ParseTopics(value, indexed, topics[1:])
 		if err != nil {
 			return err
 		}

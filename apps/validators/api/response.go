@@ -3,7 +3,7 @@ package api
 import (
 	"fmt"
 	"github.com/curtis0505/bridge/apps/validators/validator"
-	"github.com/curtis0505/bridge/libs/elog"
+	"github.com/curtis0505/bridge/libs/logger"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -90,7 +90,7 @@ func Response200(c *gin.Context, responseData interface{}) {
 }
 
 func Response422(c *gin.Context, err error) {
-	elog.Warn(
+	logger.Warn(
 		fmt.Sprintf("[%s] %s", c.Request.Method, c.FullPath()),
 		"Header", c.Request.Header,
 		"Url", c.Request.URL,
@@ -112,7 +112,7 @@ func Response404(c *gin.Context) {
 }
 
 func ResponseException(c *gin.Context, resultCode ResultCode, err error) {
-	elog.Warn(
+	logger.Warn(
 		fmt.Sprintf("[%s] %s", c.Request.Method, c.FullPath()),
 		"Header", c.Request.Header,
 		"Url", c.Request.URL,

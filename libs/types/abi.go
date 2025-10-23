@@ -10,8 +10,8 @@ import (
 	"github.com/curtis0505/bridge/libs/logger/v2"
 	etherabi "github.com/ethereum/go-ethereum/accounts/abi"
 	ethercommon "github.com/ethereum/go-ethereum/common"
-	klayabi "github.com/klaytn/klaytn/accounts/abi"
-	klaycommon "github.com/klaytn/klaytn/common"
+	klayabi "github.com/kaiachain/kaia/accounts/abi"
+	klaycommon "github.com/kaiachain/kaia/common"
 	"reflect"
 	"strings"
 )

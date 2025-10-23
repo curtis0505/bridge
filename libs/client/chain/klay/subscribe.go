@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"github.com/curtis0505/bridge/libs/logger/v2"
 	"github.com/curtis0505/bridge/libs/types"
-	"github.com/klaytn/klaytn"
-	klaytypes "github.com/klaytn/klaytn/blockchain/types"
-	"github.com/klaytn/klaytn/common"
+	klay "github.com/kaiachain/kaia"
+	klaytypes "github.com/kaiachain/kaia/blockchain/types"
+	"github.com/kaiachain/kaia/common"
 	"time"
 )
 
 func (c *client) Subscribe(ctx context.Context, cb func(eventLog types.Log), addresses ...string) error {
 	var waitingTransactions []types.Log
-	var subscription klaytn.Subscription
+	var subscription klay.Subscription
 	var err error
 
 	logChan := make(chan klaytypes.Log, 5)
@@ -77,8 +77,8 @@ func (c *client) Subscribe(ctx context.Context, cb func(eventLog types.Log), add
 	return nil
 }
 
-func (c *client) subscribe(ctx context.Context, addresses []string, ch chan<- klaytypes.Log, try int) (klaytn.Subscription, error) {
-	query := klaytn.FilterQuery{}
+func (c *client) subscribe(ctx context.Context, addresses []string, ch chan<- klaytypes.Log, try int) (klay.Subscription, error) {
+	query := klay.FilterQuery{}
 	for _, address := range addresses {
 		query.Addresses = append(query.Addresses, common.HexToAddress(address))
 	}

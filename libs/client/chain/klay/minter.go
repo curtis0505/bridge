@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/curtis0505/bridge/libs/types"
 	"github.com/curtis0505/bridge/libs/types/bridge/abi/klay"
-	"github.com/klaytn/klaytn/accounts/abi"
-	"github.com/klaytn/klaytn/common"
-	"github.com/klaytn/klaytn/common/hexutil"
+	"github.com/kaiachain/kaia/accounts/abi"
+	"github.com/kaiachain/kaia/common"
+	"github.com/kaiachain/kaia/common/hexutil"
 	"math/big"
 )
 

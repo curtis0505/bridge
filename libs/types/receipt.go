@@ -1,18 +1,16 @@
 package types
 
 import (
-	"encoding/hex"
 	"fmt"
+	"math/big"
+
 	cosmossdk "github.com/cosmos/cosmos-sdk/types"
 	arbtypes "github.com/curtis0505/arbitrum/core/types"
 	basetypes "github.com/curtis0505/base/core/types"
-	troncommon "github.com/curtis0505/bridge/libs/common/tron"
-	"github.com/curtis0505/bridge/libs/logger/v2"
-	troncore "github.com/curtis0505/grpc-idl/tron/core"
+	loggerv2 "github.com/curtis0505/bridge/libs/logger/v2"
 	ethertypes "github.com/ethereum/go-ethereum/core/types"
-	klaytypes "github.com/klaytn/klaytn/blockchain/types"
-	klaycommon "github.com/klaytn/klaytn/common"
-	"math/big"
+	klaytypes "github.com/kaiachain/kaia/blockchain/types"
+	klaycommon "github.com/kaiachain/kaia/common"
 )
 
 type Receipt struct {
@@ -35,7 +33,7 @@ func (r *Receipt) BlockNumber() *big.Int {
 
 	switch v := r.inner.(type) {
 	case *klaytypes.Receipt:
-		logger.Warn("BlockNumber", logger.BuildLogInput().WithError(fmt.Errorf("not support klaytn receipt")))
+		loggerv2.Warn("BlockNumber", loggerv2.BuildLogInput().WithError(fmt.Errorf("not support klaytn receipt")))
 		return big.NewInt(0)
 	case *ethertypes.Receipt:
 		return v.BlockNumber
@@ -43,8 +41,6 @@ func (r *Receipt) BlockNumber() *big.Int {
 		return v.BlockNumber
 	case *basetypes.Receipt:
 		return v.BlockNumber
-	case *troncore.TransactionInfo:
-		return big.NewInt(v.GetBlockNumber())
 	case *cosmossdk.TxResponse:
 		return big.NewInt(v.Height)
 	}
@@ -77,11 +73,6 @@ func (r *Receipt) Status() uint64 {
 			return 0
 		}
 		return v.Status
-	case *troncore.TransactionInfo:
-		if v == nil {
-			return 0
-		}
-		return uint64(v.GetResult().Number())
 	case *cosmossdk.TxResponse:
 		if v == nil {
 			return 0
@@ -93,10 +84,6 @@ func (r *Receipt) Status() uint64 {
 
 func (r *Receipt) Success() bool {
 	switch v := r.inner.(type) {
-	case *troncore.TransactionInfo:
-		if int(v.GetResult().Number()) == int(troncore.Transaction_Result_SUCCESS) {
-			return true
-		}
 	case *cosmossdk.TxResponse:
 		if v.Code == 0 {
 			return true
@@ -123,8 +110,6 @@ func (r *Receipt) ContractAddress() string {
 		return v.ContractAddress.String()
 	case *basetypes.Receipt:
 		return v.ContractAddress.String()
-	case *troncore.TransactionInfo:
-		return troncommon.FromBytes(v.GetContractAddress()).String()
 	case *cosmossdk.TxResponse:
 		return ""
 	}
@@ -145,8 +130,6 @@ func (r *Receipt) GasUsed() uint64 {
 		return v.GasUsed
 	case *basetypes.Receipt:
 		return v.GasUsed
-	case *troncore.TransactionInfo:
-		return uint64(v.GetFee())
 	case *cosmossdk.TxResponse:
 		return uint64(v.GasWanted)
 	}
@@ -171,10 +154,6 @@ func (r *Receipt) Logs() []Log {
 	case *basetypes.Receipt:
 		for _, log := range v.Logs {
 			logs = append(logs, NewLog(*log, r.chain))
-		}
-	case *troncore.TransactionInfo:
-		for _, log := range v.GetLog() {
-			logs = append(logs, NewLog(log, r.chain))
 		}
 	case *cosmossdk.TxResponse:
 		for _, log := range v.Events {
@@ -260,8 +239,6 @@ func (r *Receipt) BlockHash() (string, error) {
 		return v.BlockHash.String(), nil
 	case *basetypes.Receipt:
 		return v.BlockHash.String(), nil
-	case *troncore.TransactionInfo:
-		return hex.EncodeToString(v.GetId()), nil
 	case *cosmossdk.TxResponse:
 		return "", nil
 	}

@@ -7,7 +7,6 @@ import (
 	"github.com/curtis0505/bridge/libs/cache"
 	"github.com/curtis0505/bridge/libs/common"
 	protocol "github.com/curtis0505/bridge/libs/dto"
-	"github.com/curtis0505/bridge/libs/elog"
 	"github.com/curtis0505/bridge/libs/entity"
 	mongoentity "github.com/curtis0505/bridge/libs/entity/mongo"
 	"github.com/curtis0505/bridge/libs/types"
@@ -26,7 +25,7 @@ func (p *EventHandler) FxChildWithdrawERC20(log types.Log) error {
 	eventFxChildWithdrawERC20 := bridgetypes.EventFxChildWithdrawERC20{}
 	err := log.Unmarshal(&eventFxChildWithdrawERC20)
 	if err != nil {
-		elog.Error("FxChildWithdrawERC20", "Unmarshal", err)
+		logger.Error("FxChildWithdrawERC20", "Unmarshal", err)
 		return err
 	}
 	tx, _, err := p.client.GetTransactionWithReceipt(context.Background(), log.Chain(), log.TxHash())
@@ -389,7 +388,7 @@ func (p *EventHandler) SyncDeposit(log types.Log) error {
 	eventSyncDeposit := bridgetypes.EventFxSyncDeposit{}
 	err := log.Unmarshal(&eventSyncDeposit)
 	if err != nil {
-		elog.Error("EventSyncDeposit", "Unmarshal", err)
+		logger.Error("EventSyncDeposit", "Unmarshal", err)
 		return err
 	}
 

@@ -10,7 +10,7 @@ import (
 	basetypes "github.com/curtis0505/base/core/types"
 	cosmostypes "github.com/curtis0505/bridge/libs/client/chain/cosmos/types"
 	ethertypes "github.com/ethereum/go-ethereum/core/types"
-	klaytypes "github.com/klaytn/klaytn/blockchain/types"
+	klaytypes "github.com/kaiachain/kaia/blockchain/types"
 	"math/big"
 
 	tmtypes "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -21,13 +21,9 @@ import (
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
-	tronapi "github.com/curtis0505/grpc-idl/tron/api"
-	troncore "github.com/curtis0505/grpc-idl/tron/core"
-	ethercommon "github.com/ethereum/go-ethereum/common"
-	"google.golang.org/protobuf/proto"
-
 	"github.com/curtis0505/bridge/libs/types"
 	"github.com/curtis0505/bridge/libs/types/bridge"
+	ethercommon "github.com/ethereum/go-ethereum/common"
 )
 
 type Proxy interface {
@@ -94,19 +90,6 @@ type CosmosClient interface {
 
 	SignMultiSig(ctx context.Context, priv *types.Account, multiSig string, msg *wasmtypes.MsgExecuteContract) (signing.SignatureV2, error)
 	SendMultiSigTransaction(ctx context.Context, multiSigPubKey *kmultisig.LegacyAminoPubKey, msg *wasmtypes.MsgExecuteContract, singedTxs ...signing.SignatureV2) (*SendTxAsyncResult, error)
-}
-
-type TronClient interface {
-	Client
-
-	EVMClient
-	StakingClient
-
-	GetTronStaking(ctx context.Context, address string, validatorAddress string) (*Staking, error)
-	GetBlock(ctx context.Context) (*tronapi.BlockExtention, error)
-	GetAccount(ctx context.Context, address string) (*troncore.Account, error)
-	CreateTransaction(ctx context.Context, contract proto.Message) (*types.Transaction, error)
-	CreateTransferTransaction(ctx context.Context, from, to string, amount *big.Int) (*types.Transaction, error)
 }
 
 type KlayClient interface {

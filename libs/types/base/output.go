@@ -6,7 +6,7 @@ import (
 	"github.com/curtis0505/bridge/libs/common"
 	"github.com/curtis0505/bridge/libs/types"
 	ethercommon "github.com/ethereum/go-ethereum/common"
-	klaycommon "github.com/klaytn/klaytn/common"
+	klaycommon "github.com/kaiachain/kaia/common"
 	"math/big"
 )
 

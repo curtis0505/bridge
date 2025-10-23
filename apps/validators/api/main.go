@@ -4,7 +4,7 @@ import (
 	"github.com/curtis0505/bridge/apps/validators/conf"
 	"github.com/curtis0505/bridge/apps/validators/validator"
 	"github.com/curtis0505/bridge/libs/client/chain"
-	"github.com/curtis0505/bridge/libs/elog"
+	"github.com/curtis0505/bridge/libs/logger"
 	"github.com/gin-gonic/gin"
 )
 
@@ -48,7 +48,7 @@ func (api *Api) Route(r *gin.Engine) {
 func (api *Api) Run() {
 	r := gin.Default()
 	r.Use(CORS())
-	r.Use(elog.GinElogMiddleWare())
+	r.Use(logger.GinElogMiddleWare())
 
 	api.Route(r)
 

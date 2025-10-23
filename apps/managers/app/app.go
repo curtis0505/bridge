@@ -10,7 +10,6 @@ import (
 	"github.com/curtis0505/bridge/apps/managers/handler/validator"
 	"github.com/curtis0505/bridge/apps/managers/handler/verify"
 	"github.com/curtis0505/bridge/libs/client/chain"
-	"github.com/curtis0505/bridge/libs/elog"
 	"github.com/curtis0505/bridge/libs/service"
 	bridgetypes "github.com/curtis0505/bridge/libs/types/bridge"
 	"github.com/gin-gonic/gin"
@@ -32,18 +31,18 @@ type App struct {
 	//repositories *model.Repositories
 	handler []types.Handler
 	router  *gin.Engine
-	logger  *elog.Logger
+	logger  *logger.Logger
 }
 
 func New(cfg conf.Config) *App {
-	elog.InitLog(cfg.Log)
+	logger.InitLog(cfg.Log)
 
-	logger := elog.NewLogger("App")
+	logger := logger.NewLogger("App")
 	logger.Info("event", "NewApp")
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
-	r.Use(gin.Recovery(), elog.GinElogMiddleWare())
+	r.Use(gin.Recovery(), logger.GinElogMiddleWare())
 
 	app := App{
 		cfg:     cfg,

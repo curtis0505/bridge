@@ -12,11 +12,11 @@ import (
 	"github.com/curtis0505/bridge/libs/client/chain"
 	"github.com/curtis0505/bridge/libs/client/chain/cosmos/types"
 	cosmoscommon "github.com/curtis0505/bridge/libs/common/cosmos"
-	"github.com/curtis0505/bridge/libs/elog"
+	"github.com/curtis0505/bridge/libs/logger"
 	commontypes "github.com/curtis0505/bridge/libs/types"
 	bridgetypes "github.com/curtis0505/bridge/libs/types/bridge"
 	"github.com/gin-gonic/gin"
-	"github.com/klaytn/klaytn/accounts/keystore"
+	"github.com/kaiachain/kaia/accounts/keystore"
 	"io/ioutil"
 	"math/big"
 	"net/http"
@@ -81,7 +81,7 @@ func (controller *Controller) RecoverTransaction(c *gin.Context) {
 		return
 	}
 
-	elog.Info("API.RecoverTransaction", "req", req)
+	logger.Info("API.RecoverTransaction", "req", req)
 
 	chainSymbol := c.Param("chain")
 	chainSymbol = strings.ToUpper(chainSymbol)
@@ -114,7 +114,7 @@ func (controller *Controller) RecoverTransaction(c *gin.Context) {
 				ResponseException(c, TransactionAlreadyExecuted, nil)
 				return
 			}
-			elog.Warn("RecoverTransaction", "txHash", log.TxHash(), "event", log.EventName, "LogHandler", err)
+			logger.Warn("RecoverTransaction", "txHash", log.TxHash(), "event", log.EventName, "LogHandler", err)
 		}
 	}
 
@@ -141,20 +141,20 @@ func (controller *Controller) SpeedUpTransaction(c *gin.Context) {
 		return
 	}
 
-	elog.Info("API.SpeedUpTransaction", "req", req)
+	logger.Info("API.SpeedUpTransaction", "req", req)
 
 	chainSymbol := c.Param("chain")
 	chainSymbol = strings.ToUpper(chainSymbol)
 
 	history, err := controller.Validator.PendingTransaction.Get(req.TxHash)
 	if history == nil || err != nil {
-		elog.Error("API.SpeedUpTransaction", "history", "not found")
+		logger.Error("API.SpeedUpTransaction", "history", "not found")
 		Response404(c)
 		return
 	}
 
 	if history.ChainName != chainSymbol {
-		elog.Error("API.SpeedUpTransaction", "chainName", chainSymbol, "history.ChainName", history.ChainName)
+		logger.Error("API.SpeedUpTransaction", "chainName", chainSymbol, "history.ChainName", history.ChainName)
 		Response404(c)
 		return
 	}
@@ -168,7 +168,7 @@ func (controller *Controller) SpeedUpTransaction(c *gin.Context) {
 
 	option, err := controller.Client.GetTransactionOption(context.Background(), history.ChainName, controller.Validator.Account[history.ChainName].Address)
 	if err != nil {
-		elog.Error("API.SpeedUpTransaction", "GetTransactionOption", err, "history", history)
+		logger.Error("API.SpeedUpTransaction", "GetTransactionOption", err, "history", history)
 		Response404(c)
 		return
 	}
@@ -191,12 +191,12 @@ func (controller *Controller) SpeedUpTransaction(c *gin.Context) {
 
 	submitTx, err := controller.Validator.SendSubmitTransaction(history.ChainName, history.ToAddress, history.Submission, option)
 	if err != nil {
-		elog.Error("API.SpeedUpTransaction", "SendSubmitTransaction", err, "history", history.TxHash)
+		logger.Error("API.SpeedUpTransaction", "SendSubmitTransaction", err, "history", history.TxHash)
 		ResponseException(c, InvalidTransaction, err)
 		return
 	}
 
-	elog.Info("API.SpeedUpTransaction", "tx", submitTx)
+	logger.Info("API.SpeedUpTransaction", "tx", submitTx)
 
 	Response200(c, NewBaseResponse(Success))
 }
@@ -208,7 +208,7 @@ func (controller *Controller) CancelTransaction(c *gin.Context) {
 		return
 	}
 
-	elog.Info("API.CancelTransaction", "req", req)
+	logger.Info("API.CancelTransaction", "req", req)
 
 	chainSymbol := c.Param("chain")
 	chainSymbol = strings.ToUpper(chainSymbol)
@@ -217,13 +217,13 @@ func (controller *Controller) CancelTransaction(c *gin.Context) {
 
 	nonce, err := controller.Client.NonceAt(ctx, chainSymbol, controller.Validator.Account[chainSymbol].Address)
 	if err != nil {
-		elog.Error("API.CancelTransaction", "method", "NonceAt", "err", err,
+		logger.Error("API.CancelTransaction", "method", "NonceAt", "err", err,
 			"chain", chainSymbol, "address", controller.Validator.Account[chainSymbol].Address)
 		ResponseException(c, InvalidTransaction, err)
 		return
 	}
 
-	elog.Info("API.CancelTransaction", "nonce", nonce, "req.Nonce", req)
+	logger.Info("API.CancelTransaction", "nonce", nonce, "req.Nonce", req)
 
 	if req.Nonce < nonce {
 		ResponseException(c, TransactionAlreadyExecuted, nil)
@@ -242,33 +242,33 @@ func (controller *Controller) CancelTransaction(c *gin.Context) {
 		Data:      []byte{},
 	})
 	if err != nil {
-		elog.Error("API.CancelTransaction", "method", "GetTransactionData", "err", err)
+		logger.Error("API.CancelTransaction", "method", "GetTransactionData", "err", err)
 		ResponseException(c, InvalidTransaction, err)
 		return
 	}
 
 	chainID, err := controller.Client.GetChainID(context.Background(), chainSymbol)
 	if err != nil {
-		elog.Error("API.CancelTransaction", "method", "GetChainID", "err", err, "chain", chainSymbol)
+		logger.Error("API.CancelTransaction", "method", "GetChainID", "err", err, "chain", chainSymbol)
 		ResponseException(c, InvalidTransaction, err)
 		return
 	}
 
 	signedTx, err := controller.Validator.Account[chainSymbol].Sign(transaction, chainID)
 	if err != nil {
-		elog.Error("API.CancelTransaction", "method", "Sign", "err", err, "chainID", chainID)
+		logger.Error("API.CancelTransaction", "method", "Sign", "err", err, "chainID", chainID)
 		ResponseException(c, InvalidTransaction, err)
 		return
 	}
 
-	elog.Info("API.CancelTransaction", "tx", signedTx.TxHash())
+	logger.Info("API.CancelTransaction", "tx", signedTx.TxHash())
 
 	Response200(c, NewBaseResponse(Success))
 }
 
 func (controller *Controller) GenerateKey(c *gin.Context) {
 
-	elog.Info("API.GenerateKey")
+	logger.Info("API.GenerateKey")
 	req := GenerateKeyRequest{}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		Response422(c, err)

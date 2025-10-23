@@ -6,7 +6,7 @@ import (
 	"github.com/curtis0505/bridge/libs/logger/v2"
 	"github.com/curtis0505/bridge/libs/types"
 	etherabi "github.com/ethereum/go-ethereum/accounts/abi"
-	klayabi "github.com/klaytn/klaytn/accounts/abi"
+	klayabi "github.com/kaiachain/kaia/accounts/abi"
 	"strings"
 	"sync"
 	"time"

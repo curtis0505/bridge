@@ -33,9 +33,7 @@ import (
 	tokentypes "github.com/curtis0505/bridge/libs/types/token"
 	"github.com/curtis0505/bridge/libs/util"
 	"github.com/curtis0505/grpc-idl/finschia/foundation"
-	troncore "github.com/curtis0505/grpc-idl/tron/core"
 	"github.com/shopspring/decimal"
-	"google.golang.org/protobuf/proto"
 	"math/big"
 	"net/http"
 	"net/url"
@@ -201,13 +199,16 @@ func (c *client) GasPrice(ctx context.Context) (*big.Int, error) {
 	return big.NewInt(0), clienttypes.NotImplemented
 }
 func (c *client) RawTxAsync(ctx context.Context, rawTx []byte, rawProxyRequest []byte) (*clienttypes.SendTxAsyncResult, error) {
-	// minseok95: broadcast as sync to receive check tx message
-	//return c.BroadcastRawTx(ctx, rawTx, txtypes.BroadcastMode_BROADCAST_MODE_ASYNC)
 	return c.BroadcastRawTx(ctx, rawTx, txtypes.BroadcastMode_BROADCAST_MODE_SYNC)
 }
 
 func (c *client) RawTxAsyncByTx(ctx context.Context, tx *types.Transaction) (*clienttypes.SendTxAsyncResult, error) {
-	raw, err := proto.Marshal(tx.Inner().(*troncore.Transaction))
+	cosmosTx, err := tx.CosmosTransaction()
+	if err != nil {
+		return nil, err
+	}
+
+	raw, err := gogoproto.Marshal(cosmosTx)
 	if err != nil {
 		return nil, err
 	}

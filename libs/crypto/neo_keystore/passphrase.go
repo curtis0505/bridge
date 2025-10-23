@@ -7,7 +7,7 @@ import (
 	"math/big"
 	"regexp"
 
-	"github.com/klaytn/klaytn/console"
+	"github.com/kaiachain/kaia/console"
 )
 
 const (

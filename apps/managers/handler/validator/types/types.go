@@ -12,7 +12,6 @@ import (
 	"github.com/curtis0505/bridge/apps/managers/util"
 	"github.com/curtis0505/bridge/libs/client/chain/cosmos/types"
 	"github.com/curtis0505/bridge/libs/common"
-	"github.com/curtis0505/bridge/libs/elog"
 	mongoentity "github.com/curtis0505/bridge/libs/entity/mongo"
 	commontypes "github.com/curtis0505/bridge/libs/types"
 	util2 "github.com/curtis0505/bridge/libs/util"
@@ -67,7 +66,7 @@ func (v *ValidatorInfo) initAddressInfo() {
 	for _, addressInfo := range v.AddressInfo {
 		address, err := v.getAddress(addressInfo.Chain)
 		if err != nil {
-			elog.Error("initAddressInfo", "name", v.Name, "desc", v.Description, "getAddress", err)
+			logger.Error("initAddressInfo", "name", v.Name, "desc", v.Description, "getAddress", err)
 		}
 
 		addressInfo.Address = address

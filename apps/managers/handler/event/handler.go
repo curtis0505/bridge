@@ -7,7 +7,6 @@ import (
 	eventtypes "github.com/curtis0505/bridge/apps/managers/handler/event/types"
 	"github.com/curtis0505/bridge/apps/managers/types"
 	"github.com/curtis0505/bridge/libs/client/chain"
-	"github.com/curtis0505/bridge/libs/elog"
 	"github.com/curtis0505/bridge/libs/service"
 	commontypes "github.com/curtis0505/bridge/libs/types"
 	bridgetypes "github.com/curtis0505/bridge/libs/types/bridge"
@@ -27,7 +26,7 @@ var (
 type EventHandler struct {
 	cfg    conf.Config
 	client *chain.Client
-	logger *elog.Logger
+	logger *logger.Logger
 
 	logEvmEvent     map[string]func(bridge.Log) error
 	logEvmEventLock *sync.RWMutex
@@ -61,7 +60,7 @@ func New(
 	event := EventHandler{
 		cfg:    cfg,
 		client: client,
-		logger: elog.NewLogger("Event"),
+		logger: logger.NewLogger("Event"),
 
 		logEvmEvent:     make(map[string]func(bridge.Log) error),
 		logEvmEventLock: &sync.RWMutex{},

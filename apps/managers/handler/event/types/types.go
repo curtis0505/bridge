@@ -3,7 +3,7 @@ package types
 import (
 	"fmt"
 	"github.com/curtis0505/bridge/apps/managers/util"
-	protocol "github.com/curtis0505/bridge/libs/dto"
+	"github.com/curtis0505/bridge/libs/dto"
 	mongoentity "github.com/curtis0505/bridge/libs/entity/mongo"
 	"math/big"
 	"time"
@@ -120,8 +120,8 @@ func (t *BridgeTransferInfo) String() string {
 	)
 }
 
-func (t *BridgeTransferInfo) HistoryData() *protocol.ScBridgeTransferHistoryData {
-	return &protocol.ScBridgeTransferHistoryData{
+func (t *BridgeTransferInfo) HistoryData() *dto.ScBridgeTransferHistoryData {
+	return &dto.ScBridgeTransferHistoryData{
 		Chain:      t.Chain,
 		From:       t.From,
 		To:         t.To,

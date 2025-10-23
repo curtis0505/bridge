@@ -7,8 +7,8 @@ import (
 	basecommon "github.com/curtis0505/base/common"
 	"github.com/ethereum/go-ethereum"
 	ethercommon "github.com/ethereum/go-ethereum/common"
-	"github.com/klaytn/klaytn"
-	klaycommon "github.com/klaytn/klaytn/common"
+	klay "github.com/kaiachain/kaia"
+	klaycommon "github.com/kaiachain/kaia/common"
 	"math/big"
 )
 
@@ -25,9 +25,9 @@ type CallMsg struct {
 	Data     []byte
 }
 
-func (c CallMsg) Klaytn() klaytn.CallMsg {
+func (c CallMsg) Klaytn() klay.CallMsg {
 	to := klaycommon.HexToAddress(c.To)
-	return klaytn.CallMsg{
+	return klay.CallMsg{
 		From:     klaycommon.HexToAddress(c.From),
 		To:       &to,
 		Gas:      c.Gas,

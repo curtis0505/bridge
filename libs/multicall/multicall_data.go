@@ -2,11 +2,10 @@ package multicall
 
 import (
 	"fmt"
-	troncommon "github.com/curtis0505/bridge/libs/common/tron"
 	"github.com/curtis0505/bridge/libs/types"
 	etherabi "github.com/ethereum/go-ethereum/accounts/abi"
 	ethercommon "github.com/ethereum/go-ethereum/common"
-	klayabi "github.com/klaytn/klaytn/accounts/abi"
+	klayabi "github.com/kaiachain/kaia/accounts/abi"
 )
 
 type Call struct {
@@ -54,20 +53,6 @@ func newCall(chain, to string, methodName string, abi []map[string]interface{}, 
 
 		call.Abi = abiParsed.klayAbi
 		call.Address = ethercommon.HexToAddress(to)
-		call.Data = input
-	case types.ChainTRX:
-		abiParsed, err := getAbiCache().getAbi(chain, to, abi)
-		if err != nil {
-			return call, err
-		}
-
-		input, err := abiParsed.etherAbi.Pack(methodName, args...)
-		if err != nil {
-			return call, err
-		}
-
-		call.Abi = abiParsed.etherAbi
-		call.Address = ethercommon.BytesToAddress(troncommon.FromBase58Unsafe(to).ToEthAddress())
 		call.Data = input
 	default:
 		abiParsed, err := getAbiCache().getAbi(chain, to, abi)
@@ -129,20 +114,6 @@ func newCallUnmarshaler(chain, to string, methodName string, abi []map[string]in
 
 		multiCall.Abi = abiParsed.klayAbi
 		multiCall.Address = ethercommon.HexToAddress(to)
-		multiCall.Data = input
-	case types.ChainTRX:
-		abiParsed, err := getAbiCache().getAbi(chain, to, abi)
-		if err != nil {
-			return Call{}, err
-		}
-
-		input, err := abiParsed.etherAbi.Pack(methodName, args...)
-		if err != nil {
-			return Call{}, err
-		}
-
-		multiCall.Abi = abiParsed.etherAbi
-		multiCall.Address = ethercommon.BytesToAddress(troncommon.FromBase58Unsafe(to).ToEthAddress())
 		multiCall.Data = input
 	default:
 		abiParsed, err := getAbiCache().getAbi(chain, to, abi)

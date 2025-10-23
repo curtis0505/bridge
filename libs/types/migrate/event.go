@@ -1,7 +1,7 @@
 package migrate
 
 import (
-	"github.com/klaytn/klaytn/common"
+	"github.com/kaiachain/kaia/common"
 	"math/big"
 )
 

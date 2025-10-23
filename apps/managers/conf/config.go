@@ -2,7 +2,6 @@ package conf
 
 import (
 	"github.com/curtis0505/bridge/libs/client/chain/conf"
-	"github.com/curtis0505/bridge/libs/elog"
 	modelconf "github.com/curtis0505/bridge/libs/model/conf/v2"
 	"github.com/curtis0505/bridge/libs/types"
 	"github.com/naoina/toml"
@@ -36,7 +35,7 @@ type Config struct {
 
 	Repositories modelconf.Config
 
-	Log elog.Config
+	Log logger.Config
 
 	Client   conf.Config
 	FxPortal struct {

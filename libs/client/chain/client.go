@@ -16,7 +16,6 @@ import (
 	"github.com/curtis0505/bridge/libs/client/chain/cosmos"
 	"github.com/curtis0505/bridge/libs/client/chain/ether"
 	"github.com/curtis0505/bridge/libs/client/chain/klay"
-	"github.com/curtis0505/bridge/libs/client/chain/tron"
 	clienttypes "github.com/curtis0505/bridge/libs/client/chain/types"
 	"github.com/curtis0505/bridge/libs/database"
 	mongoServiceDB "github.com/curtis0505/bridge/libs/database/mongo/service_db"
@@ -112,6 +111,29 @@ func NewClient(nodes []*mongoServiceDB.Nodes) *Client {
 	return client
 }
 
+/*
+NewClientByConfig bridge-validator 에서만 사용중
+*/
+func NewClientByConfig(config conf.Config) *Client {
+	client := &Client{
+		nodes:   make(map[string][]Node),
+		clients: make(map[string]clienttypes.Client),
+		chains:  make([]string, 0),
+	}
+
+	for _, clientConfig := range config {
+		if err := client.AddClient(clientConfig); err != nil {
+			//logger.Error("AddClient", "chain", clientConfig.Chain, "url", clientConfig.Url, "err", err)
+			panic(err)
+		}
+	}
+
+	client.setActiveClient()
+	go client.iterate()
+
+	return client
+}
+
 func (p *Client) AddClient(config conf.ClientConfig) error {
 	var client clienttypes.Client
 	var err error
@@ -128,8 +150,6 @@ func (p *Client) AddClient(config conf.ClientConfig) error {
 		client, err = ether.NewClient(config)
 	case types.ChainATOM, types.ChainFNSA, types.ChainTFNSA, types.ChainOSMO, types.ChainKAVA:
 		client, err = cosmos.NewClient(config)
-	case types.ChainTRX:
-		client, err = tron.NewClient(config)
 	default:
 		return fmt.Errorf("invalid chain %s", config.Chain)
 	}

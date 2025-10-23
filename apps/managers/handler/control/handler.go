@@ -6,7 +6,7 @@ import (
 	eventtypes "github.com/curtis0505/bridge/apps/managers/handler/event/types"
 	"github.com/curtis0505/bridge/apps/managers/types"
 	"github.com/curtis0505/bridge/libs/client/chain"
-	"github.com/curtis0505/bridge/libs/elog"
+	"github.com/curtis0505/bridge/libs/logger"
 	commontypes "github.com/curtis0505/bridge/libs/types"
 	bridgetypes "github.com/curtis0505/bridge/libs/types/bridge"
 	"github.com/gin-gonic/gin"
@@ -25,7 +25,7 @@ var (
 type ControlHandler struct {
 	cfg        conf.Config
 	client     *chain.Client
-	logger     *elog.Logger
+	logger     *logger.Logger
 	pauseCount atomic.Int32
 
 	account      map[string]*commontypes.Account
@@ -40,7 +40,7 @@ func New(cfg conf.Config, client *chain.Client) *ControlHandler {
 		cfg:        cfg,
 		client:     client,
 		pauseCount: atomic.Int32{},
-		logger:     elog.NewLogger("Control"),
+		logger:     logger.NewLogger("Control"),
 		account:    make(map[string]*commontypes.Account),
 
 		pending:      make(map[string]PendingTx),

@@ -7,7 +7,6 @@ import (
 	"github.com/curtis0505/bridge/apps/managers/util"
 	"github.com/curtis0505/bridge/libs/cache"
 	"github.com/curtis0505/bridge/libs/client/chain"
-	"github.com/curtis0505/bridge/libs/elog"
 	"github.com/curtis0505/bridge/libs/service"
 	bridge "github.com/curtis0505/bridge/libs/types"
 	"github.com/gin-gonic/gin"
@@ -21,7 +20,7 @@ var (
 type VerifyHandler struct {
 	cfg    conf.Config
 	client *chain.Client
-	logger *elog.Logger
+	logger *logger.Logger
 
 	historyService *service.HistoryService
 
@@ -33,7 +32,7 @@ func New(cfg conf.Config, client *chain.Client) *VerifyHandler {
 	verify := VerifyHandler{
 		cfg:    cfg,
 		client: client,
-		logger: elog.NewLogger("Verify"),
+		logger: logger.NewLogger("Verify"),
 
 		vaultBalance: make(map[string]*big.Int),
 		minterSupply: make(map[string]*big.Int),

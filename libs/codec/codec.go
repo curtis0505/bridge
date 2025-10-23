@@ -13,7 +13,7 @@ import (
 	commontypes "github.com/curtis0505/bridge/libs/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/gin-gonic/gin"
-	"github.com/klaytn/klaytn/common/hexutil"
+	"github.com/kaiachain/kaia/common/hexutil"
 	"net/http"
 	"reflect"
 	"runtime"

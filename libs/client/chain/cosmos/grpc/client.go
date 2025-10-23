@@ -8,11 +8,10 @@ import (
 	"fmt"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	kmultisig "github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
+	"github.com/cosmos/gogoproto/proto"
 	cosmostypes "github.com/curtis0505/bridge/libs/client/chain/cosmos/types"
-	troncore "github.com/curtis0505/grpc-idl/tron/core"
 	"github.com/shopspring/decimal"
 	"google.golang.org/grpc"
-	"google.golang.org/protobuf/proto"
 	"math/big"
 	"sync"
 	"time"
@@ -200,13 +199,16 @@ func (c *client) GasPrice(ctx context.Context) (*big.Int, error) {
 	return big.NewInt(0), clienttypes.NotImplemented
 }
 func (c *client) RawTxAsync(ctx context.Context, rawTx []byte, rawProxyRequest []byte) (*clienttypes.SendTxAsyncResult, error) {
-	// minseok95: broadcast as sync to receive check tx message
-	//return c.BroadcastRawTx(ctx, rawTx, txtypes.BroadcastMode_BROADCAST_MODE_ASYNC)
 	return c.BroadcastRawTx(ctx, rawTx, txtypes.BroadcastMode_BROADCAST_MODE_SYNC)
 }
 
 func (c *client) RawTxAsyncByTx(ctx context.Context, tx *types.Transaction) (*clienttypes.SendTxAsyncResult, error) {
-	raw, err := proto.Marshal(tx.Inner().(*troncore.Transaction))
+	cosmosTx, err := tx.CosmosTransaction()
+	if err != nil {
+		return nil, err
+	}
+
+	raw, err := proto.Marshal(cosmosTx)
 	if err != nil {
 		return nil, err
 	}

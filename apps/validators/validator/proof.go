@@ -7,11 +7,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/curtis0505/bridge/libs/common"
 	"github.com/curtis0505/bridge/libs/dto"
-	"github.com/curtis0505/bridge/libs/elog"
+	"github.com/curtis0505/bridge/libs/logger"
 	commontypes "github.com/curtis0505/bridge/libs/types"
 	bridgetypes "github.com/curtis0505/bridge/libs/types/bridge"
 	"github.com/curtis0505/bridge/libs/types/token"
-	klaycommon "github.com/klaytn/klaytn/common"
+	klaycommon "github.com/kaiachain/kaia/common"
 	"io"
 	"net/http"
 )
@@ -36,7 +36,7 @@ func (p *Validator) getProof(commonLog bridgetypes.CommonEventLog, contractMetho
 	}
 
 	sendTokenAddr := commonLog.FromTokenAddr.String()
-	elog.Debug("getProof", "commonLog", commonLog, "FromChainName", commonLog.FromChainName, "sendTokenAddr", sendTokenAddr)
+	logger.Debug("getProof", "commonLog", commonLog, "FromChainName", commonLog.FromChainName, "sendTokenAddr", sendTokenAddr)
 
 	var vaultAddress, minterAddress, msgReceiver string
 

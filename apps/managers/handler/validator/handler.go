@@ -6,13 +6,10 @@ import (
 	validatortypes "github.com/curtis0505/bridge/apps/managers/handler/validator/types"
 	"github.com/curtis0505/bridge/apps/managers/types"
 	"github.com/curtis0505/bridge/libs/client/chain"
-	"github.com/curtis0505/bridge/libs/elog"
 	"github.com/curtis0505/bridge/libs/model"
 	"github.com/curtis0505/bridge/libs/service"
 	commontypes "github.com/curtis0505/bridge/libs/types"
 	"github.com/gin-gonic/gin"
-	"github.com/go-redsync/redsync/v4"
-	"github.com/go-redsync/redsync/v4/redis/goredis/v8"
 	"sync"
 	"time"
 )
@@ -24,7 +21,7 @@ var (
 type ValidatorHandler struct {
 	cfg    conf.Config
 	client *chain.Client
-	logger *elog.Logger
+	logger *logger.Logger
 
 	cache   *model.Cache
 	redSync *redsync.Redsync
@@ -46,7 +43,7 @@ func New(cfg conf.Config, client *chain.Client) *ValidatorHandler {
 	validator := ValidatorHandler{
 		cfg:    cfg,
 		client: client,
-		logger: elog.NewLogger("Validator"),
+		logger: logger.NewLogger("Validator"),
 
 		pendingTxMapLock: &sync.RWMutex{},
 		pendingTxMap:     make(map[string]*validatortypes.PendingTx),

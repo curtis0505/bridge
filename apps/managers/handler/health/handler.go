@@ -3,7 +3,6 @@ package health
 import (
 	"github.com/curtis0505/bridge/apps/managers/types"
 	"github.com/curtis0505/bridge/libs/client/chain"
-	"github.com/curtis0505/bridge/libs/elog"
 	bridge "github.com/curtis0505/bridge/libs/types"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -15,12 +14,12 @@ var (
 
 type Health struct {
 	client *chain.Client
-	logger *elog.Logger
+	logger *logger.Logger
 }
 
 func New() *Health {
 	health := Health{
-		logger: elog.NewLogger("Health"),
+		logger: logger.NewLogger("Health"),
 	}
 
 	return &health

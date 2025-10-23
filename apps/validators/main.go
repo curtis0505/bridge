@@ -7,7 +7,7 @@ import (
 	"github.com/curtis0505/bridge/apps/validators/conf"
 	"github.com/curtis0505/bridge/apps/validators/validator"
 	"github.com/curtis0505/bridge/libs/client/chain"
-	"github.com/curtis0505/bridge/libs/elog"
+	"github.com/curtis0505/bridge/libs/logger"
 	"time"
 )
 
@@ -18,8 +18,8 @@ func main() {
 		panic(err)
 	}
 
-	elog.InitLog(config.Log)
-	elog.SetAppName("validator")
+	logger.InitLog(config.Log)
+	logger.SetAppName("validator")
 
 	clientInstance := chain.NewClientByConfig(config.Client)
 

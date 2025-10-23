@@ -2,7 +2,7 @@ package klay
 
 import (
 	common "github.com/curtis0505/bridge/libs/types/bridge/abi"
-	"github.com/klaytn/klaytn/accounts/abi"
+	"github.com/kaiachain/kaia/accounts/abi"
 	"strings"
 )
 

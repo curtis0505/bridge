@@ -10,8 +10,8 @@ import (
 	"path"
 	"strings"
 
-	"github.com/klaytn/klaytn/console"
-	"github.com/klaytn/klaytn/crypto"
+	"github.com/kaiachain/kaia/console"
+	"github.com/kaiachain/kaia/crypto"
 )
 
 const (

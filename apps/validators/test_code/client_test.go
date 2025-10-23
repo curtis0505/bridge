@@ -10,7 +10,7 @@ import (
 	"github.com/curtis0505/bridge/libs/client/chain"
 	cosmostypes "github.com/curtis0505/bridge/libs/client/chain/cosmos/types"
 	"github.com/curtis0505/bridge/libs/common"
-	"github.com/curtis0505/bridge/libs/elog"
+	"github.com/curtis0505/bridge/libs/logger"
 	"github.com/curtis0505/bridge/libs/testutil"
 	commontypes "github.com/curtis0505/bridge/libs/types"
 	"github.com/curtis0505/bridge/libs/types/bridge/abi"
@@ -379,7 +379,7 @@ func Test_DepositToken(t *testing.T) {
 		panic(err)
 	}
 
-	elog.InitLog(config.Log)
+	logger.InitLog(config.Log)
 
 	userAccount, err := commontypes.NewAccountFromPK(account.PrivKey)
 	if err != nil {

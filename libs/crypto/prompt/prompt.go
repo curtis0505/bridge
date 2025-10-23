@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/klaytn/klaytn/console"
+	"github.com/kaiachain/kaia/console"
 )
 
 type handler interface{}

@@ -6,7 +6,6 @@ import (
 	arbitrumcommon "github.com/curtis0505/arbitrum/common"
 	arbitrumclient "github.com/curtis0505/arbitrum/ethclient"
 	"github.com/curtis0505/bridge/libs/client/chain/cosmos"
-	"github.com/curtis0505/bridge/libs/client/chain/tron"
 	"github.com/curtis0505/bridge/libs/types"
 	"github.com/curtis0505/bridge/libs/util"
 	"github.com/stretchr/testify/assert"
@@ -83,13 +82,6 @@ func TestProxy_Cosmos(t *testing.T) {
 	}
 
 	t.Log(client.GetValidatorApr(context.Background(), "cosmosvaloper1c4k24jzduc365kywrsvf5ujz4ya6mwympnc4en"))
-}
-
-func TestProxy_Tron(t *testing.T) {
-	proxy := NewTestProxy(t)
-	client, err := tron.ProxyClient(proxy)
-	assert.NoError(t, err)
-	t.Log(client.ChainName())
 }
 
 func TestArbitrum(t *testing.T) {

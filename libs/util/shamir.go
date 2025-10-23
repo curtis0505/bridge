@@ -2,7 +2,7 @@ package util
 
 import (
 	"github.com/codahale/sss"
-	"github.com/klaytn/klaytn/common/hexutil"
+	"github.com/kaiachain/kaia/common/hexutil"
 )
 
 func ShamirEnc(secret string, create int, threshold int) (map[byte][]byte, error) {

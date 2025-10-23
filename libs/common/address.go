@@ -9,11 +9,10 @@ import (
 	arbcommon "github.com/curtis0505/arbitrum/common"
 	basecommon "github.com/curtis0505/base/common"
 	cosmoscommon "github.com/curtis0505/bridge/libs/common/cosmos"
-	troncommon "github.com/curtis0505/bridge/libs/common/tron"
 	"github.com/curtis0505/bridge/libs/types"
 	ethercommon "github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
-	klaycommon "github.com/klaytn/klaytn/common"
+	klaycommon "github.com/kaiachain/kaia/common"
 	"strings"
 )
 
@@ -35,12 +34,6 @@ func HexToAddress(chain, address string) Address {
 		return arbcommon.HexToAddress(address)
 	case types.ChainBASE:
 		return basecommon.HexToAddress(address)
-	case types.ChainTRX:
-		a, err := troncommon.FromBase58(address)
-		if err != nil {
-			return ethercommon.Address{}
-		}
-		return ethercommon.BytesToAddress(a.ToEthAddress())
 	case types.ChainATOM, types.ChainKAVA, types.ChainOSMO, types.ChainFNSA, types.ChainTFNSA:
 		return cosmoscommon.FromBech32UnSafe(chain, address)
 	default:
@@ -65,57 +58,6 @@ func EmptyAddress(address Address) bool {
 	default:
 		return v.String() == "0x0000000000000000000000000000000000000000" || v.String() == ""
 	}
-}
-
-func HexToBase58Address(chain string, address any) string {
-	switch chain {
-	case "TRX":
-		switch v := address.(type) {
-		case ethercommon.Address:
-			return troncommon.FromEthAddress(v.Bytes()).String()
-		case klaycommon.Address:
-			return troncommon.FromEthAddress(v.Bytes()).String()
-		case troncommon.Address:
-			return v.String()
-		case string:
-			if strings.Contains(v, "0x") {
-				return troncommon.FromEthAddress(HexToAddress(types.ChainTRX, v).Bytes()).String()
-			} else {
-				return v
-			}
-		case []byte:
-			return troncommon.FromBytes(v).String()
-		}
-	}
-	return ""
-}
-
-func ArrayAddress(addresses ...Address) any {
-	if len(addresses) == 0 {
-		return []ethercommon.Address{}
-	}
-
-	switch addresses[0].(type) {
-	case klaycommon.Address:
-		var array []klaycommon.Address
-		for _, address := range addresses {
-			array = append(array, address.(klaycommon.Address))
-		}
-		return array
-	case ethercommon.Address:
-		var array []ethercommon.Address
-		for _, address := range addresses {
-			array = append(array, address.(ethercommon.Address))
-		}
-		return array
-	case arbcommon.Address:
-		var array []arbcommon.Address
-		for _, address := range addresses {
-			array = append(array, address.(arbcommon.Address))
-		}
-		return array
-	}
-	return []ethercommon.Address{}
 }
 
 func BytesToAddress(chain string, address []byte) string {
@@ -144,8 +86,6 @@ func PublicKeyToAddress(chain string, publicKey any) (string, error) {
 			return crypto.PubkeyToAddress(v).String(), nil
 		case types.ChainTypeCOSMOS:
 			return cosmoscommon.FromPublicKeyUnSafe(chain, elliptic.Marshal(v.Curve, v.X, v.Y)).String(), nil
-		case types.ChainTypeTVM:
-			return troncommon.FromEthAddress(crypto.PubkeyToAddress(v).Bytes()).String(), nil
 		}
 	case cosmoscryptotypes.PubKey:
 		switch types.GetChainType(chain) {
